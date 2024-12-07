@@ -1,3 +1,5 @@
-/envs
+# /.venv
 /EA_Data
 /results
+/industry
+/indust_merge
