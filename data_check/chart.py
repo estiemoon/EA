@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-df = pd.read_excel("../results/ecm_result4.4.xlsx")
-x_headers = df.columns.to_list()
+df = pd.read_excel("../R/ecm_result6.3.2.xlsx")
+x_headers = df.columns.to_list()[5:]
 
 x = st.selectbox(
     "CHOOSE",
