@@ -10,6 +10,7 @@ setwd('Library/Mobile Documents/com~apple~CloudDocs/ecm_da/R')
 data <- read_xlsx("ecm_result6.3.2.xlsx")
 
 
+
 data$Q1 <- ifelse(
   data$"통합 필드" %in% c(
     "부산", "대구", 
@@ -43,19 +44,12 @@ data$TS <- ifelse(
   )
 
 
-data <- data[!data$"시도" %in% c( "서울", "경기도","인천" ), ]
+data <- data[!data$"시도" %in% c("경기도"), ]
+data <- data[!data$"통합 필드" %in% c("서울, 인천"), ]
 
 data$"metro" <- ifelse(grepl("광역시", data$"시군구"), 1, 0)
 
-#data$R <- ifelse(data$year>=data$TS,1,0)
-
 data$K <- data$year-data$TS
-
-#data$K[is.na(data$K)] <- 0
-#data$s1[is.na(data$s1)] <- 0
-
-#data$K[data$K == 1000] <- NA
-
 
 
 data$a <-data$Q1*(data$K<=4)*(data$K>=-4)
@@ -101,43 +95,37 @@ data$f <- data$k2*data$Q1*data$s2
 data$g <- data$k3*data$Q1*data$s2
 data$h <- data$k4*data$Q1*data$s2
 
+data$k0[is.na(data$k0)] <- 0
+data$k1[is.na(data$k1)] <- 0
+data$k2[is.na(data$k2)] <- 0
+data$k3[is.na(data$k3)] <- 0
+data$k4[is.na(data$k4)] <- 0
+data$k_1[is.na(data$k_1)] <- 0
+data$k_2[is.na(data$k_2)] <- 0
+data$k_3[is.na(data$k_3)] <- 0
+data$k_4[is.na(data$k_4)] <- 0
+
+data$a_[is.na(data$a_)] <- 0
+data$b_[is.na(data$b_)] <- 0
+data$c_[is.na(data$c_)] <- 0
+data$d[is.na(data$d)] <- 0
+data$e[is.na(data$e)] <- 0
+data$f[is.na(data$f)] <- 0
+data$g[is.na(data$g)] <- 0
+data$h[is.na(data$h)] <- 0
+
 check_sample <- subset(data, sample==1)
 
 tfer<- lm(tfer~Q1+yr1+yr2+yr3+yr4+yr5+yr6+yr7+yr8+yr9+yr10+yr11+yr12
          +a_+b_+c_+d+e+f+g+h
          +log(elementary)+stres+log(doctors)+seoul_dist+log(tp)+youth+sr
-         ,data=data, subset=sample==1)
+         ,data=check_sample)
 summary(tfer)
 
 grdp<- lm(log(grdp)~Q1+yr1+yr2+yr3+yr4+yr5+yr6+yr7+yr8+yr9+yr10+yr11+yr12
           +a_+b_+c_+d+e+f+g+h
           +er+tp+tp^2+sr+youth
-          +first_ind+manuf+construc+commerce
-          ,data=data, subset=sample==1)
+          +log(total_ind)
+          ,data=check_sample)
 summary(grdp)
-
-
-tax<- lm(value~Q1+yr1+yr2+yr3+yr4+yr5+yr6+yr7+yr8+yr9+yr10+yr11+yr12
-         +a_+b_+c_+d+e+f+g+h
-         +log(tp)+total_ind+log(grdp)+lpv
-         ,data=data, subset=sample==1)
-summary(tax)
-
-
-
-data$a <-data$Q1*(data$K<=4)*(data$K>=-4)
-data$b2 <-(1-data$Q1)*(data$year<=2019)*(data$year>=2008)
-data$a[is.na(data$a)] <- 0
-
-
-
-data$sample2 <- as.numeric(data$a+data$b==1)
-
-life<- lm(qlifea~Q1+yr1+yr2+yr3+yr4+yr5+yr6+yr7+yr8+yr9+yr10+yr11
-          +a_+b_+c_+d+e+f+g+h
-          +pd+ur+ktx+ktx^2+sqrt(doctors)+log(kin)
-          ,data=data, subset=sample==1)
-summary(life)
-
-
 
